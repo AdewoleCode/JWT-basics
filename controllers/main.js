@@ -24,12 +24,13 @@ const login = async (req, res) => {
 
 const dashboard = async (req, res) => {
     const authHeader = req.headers.authorization
+    console.log(authHeader, 'controller');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')){
         throw new CustomAPIError('no token or invalid token', 401)
     }
 
-    
+
     //to create an array of [bearer, tokenvalue]
      const token = authHeader.split(' ')[1]
 
