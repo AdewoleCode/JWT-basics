@@ -23,10 +23,25 @@ const login = async (req, res) => {
 }
 
 const dashboard = async (req, res) => {
-    console.log(req.headers);
+    const authHeader = req.headers.authorization
 
-    const luckyNumber = Math.floor(Math.random() * 100 )
-    res.status(200).json({msg: `hello, john doe`, secret: `your lucky number is ${luckyNumber}`})
+    if (!authHeader || !authHeader.startsWith('Bearer ')){
+        throw new CustomAPIError('no token or invalid token', 401)
+    }
+
+    
+    //to create an array of [bearer, tokenvalue]
+     const token = authHeader.split(' ')[1]
+
+     try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const luckyNumber = Math.floor(Math.random() * 100 )
+        res.status(200).json({msg: `hello, ${decoded.username}`, secret: `your lucky number is ${luckyNumber}`})
+
+     } catch (error) {
+        throw new CustomAPIError('not authorized to access this route', 401)
+     }
+
 }
 
 
